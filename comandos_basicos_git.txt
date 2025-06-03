@@ -94,4 +94,4 @@ Exemplos:
 Use git help ou git comando --help para mais detalhes.
 Exemplos:
     git help
-    git commit --help
+    git commit --help.

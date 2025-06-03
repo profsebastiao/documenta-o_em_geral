@@ -90,4 +90,4 @@ networks:
   wordpress_net:
     driver: overlay
     attachable: true
-    # Rede overlay para comunicação segura; attachable permite inspeção
+    # Rede overlay para comunicação segura; attachable permite inspeção.

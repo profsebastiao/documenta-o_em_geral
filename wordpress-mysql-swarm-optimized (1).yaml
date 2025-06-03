@@ -29,8 +29,8 @@ services:
       WORDPRESS_CONFIG_EXTRA: |
         define('FORCE_SSL_ADMIN', false);
         define('WP_MEMORY_LIMIT', '256M');
-        define('WP_HOME', 'http://10.83.0.9');
-        define('WP_SITEURL', 'http://10.83.0.9');
+        define('WP_HOME', 'http://10.83.x.9');
+        define('WP_SITEURL', 'http://10.83.x.9');
         # Configurações extras: desativa SSL forçado, aumenta memória e define URL do site
     volumes:
       - wordpress_data:/var/www/html

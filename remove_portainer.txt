@@ -34,4 +34,4 @@ sudo docker service ls
 sudo docker ps -a
 
 # Lista todas as imagens disponíveis para confirmar que as imagens do Portainer foram removidas
-sudo docker images
+sudo docker images.

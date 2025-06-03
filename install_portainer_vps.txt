@@ -73,4 +73,4 @@ sudo docker images
 # Exibe instruções para acessar o Portainer
 echo "Acesse o Portainer em: http://10.83.0.9:9400 (HTTP) ou https://10.83.0.9:9443 (HTTPS)"
 echo "Na primeira vez, configure um usuário administrador na interface web."
-echo "Se a porta 9400 não funcionar, verifique o firewall ou tente a porta 9443."
+echo "Se a porta 9400 não funcionar, verifique o firewall ou tente a porta 9443.".

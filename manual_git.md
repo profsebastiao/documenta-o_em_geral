@@ -175,5 +175,5 @@ node_modules/
 ## 👤 Autor
 
 **Sebastião Bastos**  
-💻 Canal: Auto Restauração  
+💻 Canal: Vivendo com tecnolgia  
 🔗 [LinkedIn](https://www.linkedin.com/in/profsebastiao) | [GitHub](https://github.com/profsebastiao)
