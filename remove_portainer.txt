@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# Define o interpretador do script como bash
+
+# Remove os serviços do Portainer no Docker Swarm
+# Os serviços 'portainer_agent' e 'portainer_portainer' são removidos
+sudo docker service rm portainer_agent portainer_portainer
+
+# Remove contêineres residuais associados às imagens do Portainer
+# Usa 'docker ps -a -q' com filtro para encontrar IDs de contêineres
+# '--filter "ancestor=portainer/portainer-ce"' filtra contêineres da imagem portainer/portainer-ce
+# '--filter "ancestor=portainer/agent"' filtra contêineres da imagem portainer/agent
+# A opção '-f' força a remoção, mesmo que os contêineres estejam em execução
+sudo docker rm -f $(sudo docker ps -a -q --filter "ancestor=portainer/portainer-ce") $(sudo docker ps -a -q --filter "ancestor=portainer/agent")
+
+# Remove as imagens do Portainer usando seus IDs e nomes com tags
+# Os IDs '1afb58c130f4' e '0310602d00fd' foram obtidos de 'docker images'
+# Também tenta remover 'portainer/portainer-ce:2.20.1' e 'portainer/agent:2.20.1' caso existam
+# '2>/dev/null' suprime mensagens de erro se as imagens não existirem
+sudo docker rmi 1afb58c130f4 0310602d00fd portainer/portainer-ce:2.20.1 portainer/agent:2.20.1 2>/dev/null
+
+# Remove volumes não utilizados associados ao Portainer ou outros contêineres
+# A opção '-f' evita a confirmação interativa para remoção
+# Atenção: isso remove todos os volumes não associados a contêineres ativos
+sudo docker volume prune -f
+
+# Exibe uma mensagem para indicar que a verificação final está sendo feita
+echo "Verificando serviços, contêineres e imagens..."
+
+# Lista os serviços ativos do Docker Swarm para confirmar que 'portainer_agent' e 'portainer_portainer' foram removidos
+sudo docker service ls
+
+# Lista todos os contêineres (ativos e parados) para verificar se não há contêineres do Portainer
+sudo docker ps -a
+
+# Lista todas as imagens disponíveis para confirmar que as imagens do Portainer foram removidas
+sudo docker images

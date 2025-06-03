@@ -1,0 +1,95 @@
+version: '3.7'
+services:
+  wordpress:
+    image: wordpress:latest
+    # Usa a imagem oficial mais recente do WordPress, que inclui PHP-FPM e Apache
+    deploy:
+      mode: replicated
+      replicas: 1
+      # Uma réplica por padrão; ajuste para escalabilidade, se necessário
+      placement:
+        constraints:
+          - node.role == manager
+      # Implanta no nó gerenciador para integração com o Portainer
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        # Limita CPU e memória para otimizar o uso na VPS
+    ports:
+      - "80:80"
+      # Expõe a porta 80 para acessar o WordPress em http://10.83.0.9
+    environment:
+      WORDPRESS_DB_HOST: mysql
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: sua_senha_forte
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_TABLE_PREFIX: wp_
+      # Define um prefixo para tabelas do WordPress (segurança adicional)
+      WORDPRESS_CONFIG_EXTRA: |
+        define('FORCE_SSL_ADMIN', false);
+        define('WP_MEMORY_LIMIT', '256M');
+        define('WP_HOME', 'http://10.83.0.9');
+        define('WP_SITEURL', 'http://10.83.0.9');
+        # Desativa SSL forçado (ative para HTTPS), aumenta memória e define URL do site
+    volumes:
+      - wordpress_data:/var/www/html
+      # Volume para persistência de arquivos (temas, plugins, uploads)
+    restart: always
+    # Reinicia automaticamente, exceto se parado manualmente
+    depends_on:
+      - mysql
+      # Garante que o MySQL inicie antes do WordPress
+    networks:
+      - wordpress_net
+      # Conecta à rede overlay para comunicação segura
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+      # Limita logs a 10 MB por arquivo, com até 3 arquivos
+  mysql:
+    image: mysql:8.0
+    # Usa MySQL 8.0 para compatibilidade e desempenho
+    deploy:
+      mode: replicated
+      replicas: 1
+      # Uma réplica para o banco de dados
+      resources:
+        limits:
+          cpus: '0.3'
+          memory: 256M
+        # Limita recursos para o MySQL
+    environment:
+      MYSQL_ROOT_PASSWORD: sua_senha_root_forte
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: sua_senha_forte
+      # Configurações do banco; senhas devem ser iguais às do WordPress
+    volumes:
+      - mysql_data:/var/lib/mysql
+      # Volume para persistência dos dados do MySQL
+    restart: always
+    # Reinicia automaticamente
+    networks:
+      - wordpress_net
+      # Conecta à rede overlay
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+      # Limita logs a 10 MB por arquivo, com até 3 arquivos
+volumes:
+  wordpress_data:
+    name: wordpress_data
+    # Volume nomeado para arquivos do WordPress
+  mysql_data:
+    name: mysql_data
+    # Volume nomeado para dados do MySQL
+networks:
+  wordpress_net:
+    driver: overlay
+    attachable: true
+    # Rede overlay para comunicação segura; attachable permite inspeção

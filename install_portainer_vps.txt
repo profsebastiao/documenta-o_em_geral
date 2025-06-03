@@ -1,0 +1,76 @@
+#!/bin/bash
+
+# Define o interpretador do script como bash
+
+# Cria um arquivo docker-compose.yml para implantar o Portainer no Docker Swarm
+# O arquivo define dois serviços: portainer (Server) e portainer_agent (Agent)
+# Configura a porta 9400 para a interface web, mapeada para a porta interna 9000
+cat << EOF > portainer-swarm.yml
+version: '3.7'
+services:
+  portainer:
+    image: portainer/portainer-ce:lts
+    # Usa a imagem mais recente do Portainer Community Edition com a tag :lts
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      # Implanta o serviço apenas em nós gerenciadores do Swarm
+    ports:
+      - "9400:9000"
+      - "9443:9443"
+      - "8000:8000"
+      # Expõe a porta 9400 para a UI (HTTP, compatível com a configuração anterior),
+      # 9443 para HTTPS (recomendado) e 8000 para Edge Agent (opcional)
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+      # Monta o socket do Docker para comunicação e um volume para persistência
+    restart: always
+    # Configura reinicialização automática, exceto se parado manualmente
+  portainer_agent:
+    image: portainer/agent:lts
+    # Usa a imagem mais recente do Portainer Agent com a tag :lts
+    deploy:
+      mode: global
+      # Implanta o Agent em todos os nós do Swarm (global)
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
+      # Monta o socket do Docker e o diretório de volumes para gerenciamento
+    ports:
+      - "9001:9001"
+      # Expõe a porta 9001 para comunicação com o Portainer Server
+    restart: always
+    # Configura reinicialização automática
+volumes:
+  portainer_data:
+    # Define um volume nomeado para persistência dos dados do Portainer
+EOF
+
+# Implanta a stack do Portainer no Docker Swarm
+# O comando 'docker stack deploy' cria os serviços definidos no YAML
+# A stack é nomeada 'portainer'
+sudo docker stack deploy -c portainer-swarm.yml portainer
+
+# Aguarda 10 segundos para garantir que a implantação comece
+sleep 10
+
+# Exibe uma mensagem para indicar que a verificação está sendo feita
+echo "Verificando serviços, contêineres e imagens após a instalação..."
+
+# Lista os serviços do Docker Swarm para confirmar que 'portainer_portainer' e 'portainer_portainer_agent' estão ativos
+sudo docker service ls
+
+# Lista todos os contêineres (ativos e parados) para verificar os contêineres do Portainer
+sudo docker ps -a
+
+# Lista as imagens para confirmar que 'portainer/portainer-ce:lts' e 'portainer/agent:lts' foram baixadas
+sudo docker images
+
+# Exibe instruções para acessar o Portainer
+echo "Acesse o Portainer em: http://10.83.0.9:9400 (HTTP) ou https://10.83.0.9:9443 (HTTPS)"
+echo "Na primeira vez, configure um usuário administrador na interface web."
+echo "Se a porta 9400 não funcionar, verifique o firewall ou tente a porta 9443."

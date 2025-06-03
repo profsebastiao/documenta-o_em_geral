@@ -1,0 +1,97 @@
+
+==========================
+COMANDOS BÁSICOS DO GIT
+==========================
+
+🔹 git init
+Inicia um repositório Git na pasta atual.
+Exemplo:
+    git init
+
+🔹 git status
+Mostra o estado atual do repositório (arquivos modificados, não rastreados, etc).
+Exemplo:
+    git status
+
+🔹 git add
+Adiciona arquivos ao "staging area" (área de preparação para commit).
+Exemplos:
+    git add arquivo.txt       # adiciona um arquivo específico
+    git add .                 # adiciona todos os arquivos modificados
+
+🔹 git commit
+Registra as mudanças com uma mensagem descritiva.
+Exemplo:
+    git commit -m "Adiciona nova funcionalidade de login"
+
+🔹 git log
+Exibe o histórico de commits.
+Exemplo:
+    git log
+
+🔹 git diff
+Mostra as diferenças entre arquivos modificados e o último commit.
+Exemplo:
+    git diff
+
+🔹 git clone
+Clona um repositório remoto.
+Exemplo:
+    git clone https://github.com/usuario/repositorio.git
+
+🔹 git remote add origin
+Adiciona a URL de um repositório remoto (ex: GitHub).
+Exemplo:
+    git remote add origin git@github.com:usuario/repositorio.git
+
+🔹 git push
+Envia os commits para o repositório remoto.
+Exemplo:
+    git push origin main
+
+🔹 git pull
+Puxa as últimas atualizações do repositório remoto.
+Exemplo:
+    git pull origin main
+
+🔹 git branch
+Lista, cria ou muda de branches (ramificações).
+Exemplos:
+    git branch                 # lista branches
+    git branch nova-feature   # cria uma nova branch
+    git checkout nova-feature # muda para a nova branch
+
+🔹 git checkout
+Muda de branch ou descarta mudanças em arquivos.
+Exemplos:
+    git checkout main               # muda de branch
+    git checkout arquivo.txt        # descarta alterações no arquivo
+
+🔹 git merge
+Une o conteúdo de uma branch com outra.
+Exemplo:
+    git merge nova-feature
+
+🔹 git reset
+Desfaz mudanças de staging ou de commit.
+Exemplos:
+    git reset HEAD arquivo.txt      # remove do staging
+    git reset --hard                # desfaz tudo (⚠️ perigoso)
+
+🔹 git rm
+Remove arquivos do Git e/ou do sistema de arquivos.
+Exemplos:
+    git rm arquivo.txt              # remove e apaga o arquivo
+    git rm --cached arquivo.txt     # remove só do Git, mantém no disco
+
+🔹 git config
+Define configurações do Git como nome e e-mail.
+Exemplos:
+    git config --global user.name "Seu Nome"
+    git config --global user.email "seu@email.com"
+
+💡 Dica:
+Use git help ou git comando --help para mais detalhes.
+Exemplos:
+    git help
+    git commit --help
